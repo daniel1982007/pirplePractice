@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favourite Colors</title>
+</head>
+<body onload="printMessages()">
+    <header>
+        <h1>My Favourite Colors</h1>
+        <h2>Below shows my favourite colors...</h2>
+    </header>
+
+    <div id='rectangleWrapper'></div>
+
+    <script>
+        //javascript code goes from here
+        const wrapper = document.getElementById('rectangleWrapper')
+        const colors = ['#2159AE', '#7524AD', '#42CD27', '#F0C110', '#6C7276', '#E3700A']
+        
+        let index = 1
+        for(let i=0; i<colors.length; i++) {
+            const colordiv = document.createElement('DIV')
+            const text = document.createElement('P')
+            text.innerText = colors[i]
+
+            colordiv.classList.add('favecolor')
+            colordiv.id = `${index}-rectangle`
+            index++
+
+            wrapper.appendChild(colordiv)
+            wrapper.appendChild(text)
+        }
+
+        const rects = document.querySelectorAll('.favecolor')
+        for(let j=0; j<colors.length; j++) {
+            rects[j].style.background = colors[j]
+            rects[j].style.width = '400px'
+            rects[j].style.height = '200px'
+        }
+        
+        const wrapperstyle = document.querySelector('#rectangleWrapper')
+        wrapperstyle.style.padding = '50px 50px 0 50px'
+
+        function printMessages() {
+            console.log('Here are the rectangle IDs')
+            const rectangles = document.querySelectorAll('.favecolor')
+            
+            let k = 1  //k is block variable, which belongs its block
+            for(const el of rectangles) {   //el is also a block variable, which belongs to its block
+                setTimeout( () => console.log(el.id), 1000*k  )
+                if(k === rectangles.length) {
+                    break
+                }
+                k++
+            }  
+        }  
+    </script>    
+</body>
+</html>
