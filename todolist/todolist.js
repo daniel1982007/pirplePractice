@@ -423,7 +423,7 @@ function showDashboard() {
     dashboard_content.classList.remove('non-display')
     dashboard_content.innerHTML = ''
     const userdata = JSON.parse(localStorage.getItem('usersData')).filter(user => user.email === user_info.email)
-    if(!userdata[0].todolists) {
+    if(!userdata[0].todolists || !userdata[0].todolists.length) {
         //show welcome to dashboard text
         dashboard_welcomeText.innerText = `Dear ${user_info.first_name}, Welcome, to the Dashboard...`
         dashboard_inputDiv.classList.add('non-display')
@@ -466,7 +466,7 @@ function showDashboard() {
             const button = document.createElement('button')
             button.classList.add('p-1','m-1')
             button.innerText = 'Save'
-            button.addEventListener('click', updateList)
+            button.addEventListener('click', (e) => updateList(e.target.parentNode.parentNode.id, e.target.parentNode.childNodes[0].value, e.target.parentNode.childNodes[2], e.target.parentNode.parentNode.childNodes[0]))
             const error_update_text = document.createElement('p')
             error_update_text.classList.add('red')
             error_update_text.innerText = ''
@@ -514,31 +514,36 @@ function showListInInput(e) {
     e.target.parentNode.parentNode.childNodes[1].childNodes[2].innerText = ''
 }
 
-function updateList(e) {
+function updateList(id, str, err_message, show_box) {
     //e.stopPropagation()
     //console.log(e)
-    const value = e.target.parentNode.childNodes[0].value
-    //check if value exists in localstorage
+    //data pass by value or by reference
     const usersData = JSON.parse(localStorage.getItem('usersData'))
     const userData = usersData.filter(user => user.email === user_info.email)
-
-    if(userData[0].todolists.includes(value)) {
-        e.target.parentNode.childNodes[2].innerText = 'Your update is not valid, this task exists'
+    if(!str) { //this operation is for deletion
+        // operation on localstorage
+        userData[0].todolists.splice(id-1, 1)
+        // operation on frontent...how to directly remove child
+        dashboard_content.removeChild(document.getElementById(id))
+        //update id of each child
+        dashboard_content.childNodes.forEach((node, index) => {
+            node.id = index + 1
+        })
+    } else if(userData[0].todolists.includes(str)) {
+        err_message.innerText = 'Your update is not valid, this task exists'
     } else {
-        e.target.parentNode.classList.add('non-display')
-        e.target.parentNode.parentNode.childNodes[0].classList.remove('non-display')
-        e.target.parentNode.parentNode.childNodes[0].childNodes[1].innerText = value
-        //save to local storage
-        const index = e.target.parentNode.parentNode.id-1
-        userData[0].todolists[index] = value
-        localStorage.setItem('usersData', JSON.stringify(usersData))
-        //data type passed by value and by reference
+        userData[0].todolists[id-1] = str
+        document.getElementById(id).childNodes[1].classList.add('non-display')
+        show_box.childNodes[1].innerText = str
+        show_box.classList.remove('non-display')
     }
+    localStorage.setItem('usersData', JSON.stringify(usersData))
 }
 
 function createNewTodolist() {
     dashboard_inputField.value = ''
     dashboard_header.classList.add('non-display')
+    create_new.classList.add('non-display')
     dashboard_welcomeText.classList.add('non-display')
     dashboard_content.classList.add('non-display')
     dashboard_inputDiv.classList.remove('non-display')
