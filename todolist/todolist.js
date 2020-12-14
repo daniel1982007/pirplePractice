@@ -595,7 +595,4 @@ function reset_account() {
     document.getElementById('signup-2').childNodes[1].value = user_info.last_name
     document.getElementById('signup-3').childNodes[1].value = user_info.email
     document.getElementById('signup-4').childNodes[1].value = user_info.password
-
-
-
 }
